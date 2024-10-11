@@ -1,20 +1,20 @@
-local addonName, lib = ...;
-
+local _, lib = ...;
 local _G = _G
 
-local gCUnitAuras = {}
+-- Define fallback function for UnitAura
+local function _GetAuraDataByIndex(unit, index, filter)
+    return UnitAura(unit, index, filter)
+end
 
-local gUnitAura = C_UnitAuras and C_UnitAuras.GetAuraDataByIndex or _G.UnitAura
-
--- Doney Mod
-function fixCUnit()
-    if C_UnitAuras ~= nil then
-        gCUnitAuras = C_UnitAuras
-        return
+-- Register missing functions for C_UnitAuras
+local function fixCUnit()
+    -- Ensure C_SpellBook exists
+    if _G.C_UnitAuras == nil then
+        lib.LOGD("Creating C_SpellBook table ...")
+        _G.C_UnitAuras = {}
     end
 
-    C_UnitAuras = gCUnitAuras
-    C_UnitAuras.GetAuraDataByIndex = gUnitAura
+    lib.ensureFunction(C_UnitAuras, "GetAuraDataByIndex", GetAuraDataByIndex, _GetAuraDataByIndex)
 end
 
 fixCUnit()

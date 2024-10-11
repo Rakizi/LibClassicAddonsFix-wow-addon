@@ -2,22 +2,16 @@ local addonName, lib = ...;
 
 local _G = _G
 
-local gEquipmentSet
-
 -- Doney Mod
-function fixCUnit()
-    if C_EquipmentSet ~= nil then
-        gEquipmentSet = C_EquipmentSet
-    else
-        return
+local function fixCEquip()
+    -- Ensure C_EquipmentSet exists
+    if _G.C_EquipmentSet == nil then
+        lib.LOGD("Creating C_EquipmentSet table ...")
+        _G.C_EquipmentSet = {}
     end
 
-    if GetNumEquipmentSets == nil then
-        GetNumEquipmentSets = gEquipmentSet.GetNumEquipmentSets
-    end
-    if GetEquipmentSetInfo == nil then
-        GetEquipmentSetInfo = gEquipmentSet.GetEquipmentSetInfo
-    end
+    lib.ensureFunction(C_EquipmentSet, "GetNumEquipmentSets", GetNumEquipmentSets)
+    lib.ensureFunction(C_EquipmentSet, "GetEquipmentSetInfo", GetEquipmentSetInfo)
 end
 
-fixCUnit()
+fixCEquip()
